@@ -8,7 +8,7 @@ build-image:
 	@docker build -t $(app_name):$(app_version) \
 	--label "app.name=$(app_name)" \
 	--label "app.version=$(app_version)" \
-	.
+	--pull .
 
 .PHONY: list-images
 list-images:

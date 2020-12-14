@@ -40,13 +40,8 @@ jobs:
       script:
         - make lint
     - stage: Deploy
-      name: Build Docker Image
       script:
         - cat sean-side-uat-gcr-pusher.json | docker login -u _json_key --password-stdin https://gcr.io
         - make build-image
-    - name: Tag Docker Image
-      script:
         - make tag-image
-    - name: Push Docker Image
-      script:
         - make push-image

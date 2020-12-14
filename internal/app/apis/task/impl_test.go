@@ -156,8 +156,8 @@ func (s *handlerTestSuite) Test_impl_Create() {
 			wantTask: nil,
 		},
 		{
-			name:     "create newTask then 500 nil error",
-			args:     args{&entities.Task{Title: "test"}},
+			name: "create newTask then 500 nil error",
+			args: args{&entities.Task{Title: "test"}},
 			mockFunc: func() {
 				s.taskBiz.On("Create", mock.AnythingOfType("*entities.Task")).Return(
 					nil, errors.New("test error")).Once()
