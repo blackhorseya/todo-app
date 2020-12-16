@@ -15,9 +15,6 @@ cache:
 go:
   - '1.15'
 
-services:
-  - docker
-
 env:
   global:
     - GO111MODULE=on
@@ -26,7 +23,7 @@ stages:
   - Tests
   - Static Code Analytic
   - name: Deploy
-    if: branch =~ /^release-\d+\.\d+$/
+    if: branch =~ /^release-\d+\.\d+$/ AND tag =~ ^v
 
 jobs:
   include:
@@ -43,6 +40,8 @@ jobs:
       script:
         - make lint
     - stage: Deploy
+      services:
+        - docker
       install:
         - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
         - curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl" && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
