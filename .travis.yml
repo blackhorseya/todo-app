@@ -21,7 +21,6 @@ env:
 
 stages:
   - Tests
-  - Static Code Analytic
   - name: Deploy
     if: branch =~ /^release-\d+\.\d+$/ AND tag =~ ^v
 
@@ -52,4 +51,4 @@ jobs:
         - make build-image
         - make tag-image
         - make push-image
-        - make deploy-with-helm ns=side deploy_to=prod
+        - make deploy-with-helm ns=side deploy_to=prod version=$(echo $TRAVIS_TAG | cut -c 2-)
