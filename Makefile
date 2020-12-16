@@ -1,14 +1,14 @@
 app_name = todo
-app_version = latest
+version = latest
 project_id = sean-side
 ns = side
 deploy_to = uat
 
 .PHONY: build-image
 build-image:
-	@docker build -t $(app_name):$(app_version) \
+	@docker build -t $(app_name):$(version) \
 	--label "app.name=$(app_name)" \
-	--label "app.version=$(app_version)" \
+	--label "app.version=$(version)" \
 	--pull .
 
 .PHONY: list-images
@@ -19,7 +19,7 @@ list-images:
 run-with-docker:
 	@docker run -it --rm -p 8080:8080 \
 	-v $(shell pwd)/configs/app.yaml:/app/configs/app.yaml \
-	$(app_name):$(app_version)
+	$(app_name):$(version)
 
 .PHONY: run-mongo
 run-mongo:
@@ -32,11 +32,11 @@ prune-images:
 
 .PHONY: tag-image
 tag-image:
-	@docker tag $(app_name):$(app_version) gcr.io/$(project_id)/$(app_name):$(app_version)
+	@docker tag $(app_name):$(version) gcr.io/$(project_id)/$(app_name):$(version)
 
 .PHONY: push-image
 push-image:
-	@docker push gcr.io/$(project_id)/$(app_name):$(app_version)
+	@docker push gcr.io/$(project_id)/$(app_name):$(version)
 
 .PHONY: deploy-with-helm
 deploy-with-helm:
