@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/blackhorseya/todo-app/internal/app/biz/health"
+	"github.com/blackhorseya/todo-app/internal/app/entities"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,26 +23,24 @@ func NewImpl(healthBiz health.Biz) IHandler {
 // @Tags Health
 // @Accept application/json
 // @Produce application/json
-// @Success 200 {string} string "success"
+// @Success 200 {object} string
+// @Failure 500 {object} string
 // @Router /readiness [get]
 func (h *impl) Readiness(ctx *gin.Context) {
-	var (
-		code    = http.StatusOK
-		status  = "ok"
-		message = "application has been ready"
-	)
+	res := &entities.Response{
+		Ok:  true,
+		Msg: "application has been ready",
+	}
+	code := http.StatusOK
 
 	ok, _ := h.HealthBiz.Readiness()
 	if !ok {
 		code = http.StatusInternalServerError
-		status = "fail"
-		message = "application has failed"
+		res.Ok = false
+		res.Msg = "application has failed"
 	}
 
-	ctx.JSON(code, gin.H{
-		"status":  status,
-		"message": message,
-	})
+	ctx.JSON(code, res)
 }
 
 // Liveness to know when to restart an application
@@ -50,24 +49,22 @@ func (h *impl) Readiness(ctx *gin.Context) {
 // @Tags Health
 // @Accept application/json
 // @Produce application/json
-// @Success 200 {string} string "success"
+// @Success 200 {object} string
+// @Failure 500 {object} string
 // @Router /liveness [get]
 func (h *impl) Liveness(ctx *gin.Context) {
-	var (
-		code    = http.StatusOK
-		status  = "ok"
-		message = "application was alive"
-	)
+	ret := &entities.Response{
+		Ok:  true,
+		Msg: "alive",
+	}
+	code := http.StatusOK
 
 	ok, _ := h.HealthBiz.Liveness()
 	if !ok {
 		code = http.StatusInternalServerError
-		status = "fail"
-		message = "application has failed"
+		ret.Ok = false
+		ret.Msg = "dead"
 	}
 
-	ctx.JSON(code, gin.H{
-		"status":  status,
-		"message": message,
-	})
+	ctx.JSON(code, ret)
 }

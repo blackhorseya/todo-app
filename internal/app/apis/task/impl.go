@@ -1,7 +1,6 @@
 package task
 
 import (
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -9,6 +8,7 @@ import (
 	"github.com/blackhorseya/todo-app/internal/app/entities"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 type impl struct {
@@ -64,15 +64,33 @@ func (i *impl) List(c *gin.Context) {
 func (i *impl) Create(c *gin.Context) {
 	var newTask *entities.Task
 	if err := c.ShouldBindBodyWith(&newTask, binding.JSON); err != nil {
-		_ = c.AbortWithError(http.StatusInternalServerError, err).SetType(gin.ErrorTypeBind)
+		c.JSON(http.StatusBadRequest, &entities.Response{
+			Ok:  false,
+			Msg: err.Error(),
+		})
+		return
 	}
 	if newTask == nil {
-		_ = c.AbortWithError(http.StatusBadRequest, errors.New("missing new task")).SetType(gin.ErrorTypePublic)
+		c.JSON(http.StatusBadRequest, &entities.Response{
+			Ok:  false,
+			Msg: "missing new task",
+		})
+		return
 	}
 
-	ret, err := i.TaskBiz.Create(newTask)
+	data, err := i.TaskBiz.Create(newTask)
 	if err != nil {
-		_ = c.AbortWithError(http.StatusInternalServerError, err).SetType(gin.ErrorTypePrivate)
+		c.JSON(http.StatusInternalServerError, &entities.Response{
+			Ok:  false,
+			Msg: err.Error(),
+		})
+		return
+	}
+
+	any, _ := anypb.New(data)
+	ret := &entities.Response{
+		Ok:   true,
+		Data: any,
 	}
 
 	c.JSON(http.StatusCreated, ret)

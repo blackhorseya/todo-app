@@ -15,16 +15,17 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
-type handlerTestSuite struct {
+type taskTestSuite struct {
 	suite.Suite
 	r           *gin.Engine
 	taskBiz     *mocks.Biz
 	taskHandler IHandler
 }
 
-func (s *handlerTestSuite) SetupTest() {
+func (s *taskTestSuite) SetupTest() {
 	gin.SetMode(gin.TestMode)
 	s.r = gin.New()
 
@@ -36,11 +37,11 @@ func (s *handlerTestSuite) SetupTest() {
 	s.taskHandler = handler
 }
 
-func (s *handlerTestSuite) TearDownTest() {
+func (s *taskTestSuite) TearDownTest() {
 	s.taskBiz.AssertExpectations(s.T())
 }
 
-func (s *handlerTestSuite) Test_impl_List() {
+func (s *taskTestSuite) Test_impl_List() {
 	s.r.GET("/api/v1/tasks", s.taskHandler.List)
 
 	type args struct {
@@ -122,7 +123,9 @@ func (s *handlerTestSuite) Test_impl_List() {
 	}
 }
 
-func (s *handlerTestSuite) Test_impl_Create() {
+func (s *taskTestSuite) Test_impl_Create() {
+	res1, _ := anypb.New(&entities.Task{Title: "test"})
+
 	s.r.POST("/api/v1/tasks", s.taskHandler.Create)
 
 	type args struct {
@@ -133,7 +136,7 @@ func (s *handlerTestSuite) Test_impl_Create() {
 		args     args
 		mockFunc func()
 		wantCode int
-		wantTask *entities.Task
+		wantRes  *entities.Response
 	}{
 		{
 			name: "create newTask then 201 task",
@@ -143,27 +146,33 @@ func (s *handlerTestSuite) Test_impl_Create() {
 					&entities.Task{Title: "test"}, nil).Once()
 			},
 			wantCode: http.StatusCreated,
-			wantTask: &entities.Task{Title: "test"},
+			wantRes: &entities.Response{
+				Ok:   true,
+				Data: res1,
+			},
 		},
 		{
-			name: "create nil then 400 nil",
-			args: args{nil},
-			mockFunc: func() {
-				s.taskBiz.On("Create", mock.AnythingOfType("*entities.Task")).Return(
-					nil, nil).Once()
-			},
+			name:     "create nil then 400 nil",
+			args:     args{nil},
+			mockFunc: func() {},
 			wantCode: http.StatusBadRequest,
-			wantTask: nil,
+			wantRes: &entities.Response{
+				Ok:  false,
+				Msg: "missing new task",
+			},
 		},
 		{
 			name: "create newTask then 500 nil error",
-			args: args{&entities.Task{Title: "test"}},
+			args: args{&entities.Task{Title: "500"}},
 			mockFunc: func() {
 				s.taskBiz.On("Create", mock.AnythingOfType("*entities.Task")).Return(
-					nil, errors.New("test error")).Once()
+					nil, errors.New("")).Once()
 			},
 			wantCode: http.StatusInternalServerError,
-			wantTask: nil,
+			wantRes: &entities.Response{
+				Ok:  false,
+				Msg: "",
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -181,20 +190,19 @@ func (s *handlerTestSuite) Test_impl_Create() {
 		}()
 
 		body, _ := ioutil.ReadAll(got.Body)
-		var gotTask *entities.Task
-		err := json.Unmarshal(body, &gotTask)
+		var gotRes *entities.Response
+		err := json.Unmarshal(body, &gotRes)
 		if err != nil {
 			s.Errorf(err, "unmarshal response body")
 		}
 
-		s.EqualValuesf(tt.wantCode, got.StatusCode, "Create() code = [%v], wantCode = [%v]", got.StatusCode, tt.wantCode)
-		if tt.wantTask != nil {
-			s.EqualValuesf(tt.wantTask, gotTask, "Create() task = [%v], wantTask = [%v]", gotTask, tt.wantTask)
-		}
+		s.EqualValuesf(tt.wantCode, got.StatusCode, "[%s] Create() code = [%v], wantCode = [%v]", tt.name, got.StatusCode, tt.wantCode)
+		s.EqualValuesf(tt.wantRes, gotRes, "[%s] Create() res = [%v], wantRes = [%v]", tt.name, gotRes, tt.wantRes)
+
 		s.TearDownTest()
 	}
 }
 
 func TestTaskHandler(t *testing.T) {
-	suite.Run(t, new(handlerTestSuite))
+	suite.Run(t, new(taskTestSuite))
 }

@@ -4,6 +4,7 @@ import (
 	"github.com/blackhorseya/todo-app/internal/app/middlewares"
 	"github.com/blackhorseya/todo-app/internal/app/router"
 	"github.com/blackhorseya/todo-app/internal/pkg/config"
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -20,6 +21,9 @@ func NewGinEngine(r router.IRouter, config *config.Config) *gin.Engine {
 
 	// recovery
 	app.Use(gin.Recovery())
+
+	// frontend
+	app.Use(static.Serve("/", static.LocalFile("./web/build", true)))
 
 	// register route to Gin engine
 	_ = r.Register(app)

@@ -1,5 +1,12 @@
 language: go
 
+git:
+  submodules: false
+
+before_install:
+  - echo $privatekey | base64 --decode > ~/.ssh/id_rsa && sudo chmod 400 ~/.ssh/id_rsa
+  - git submodule update --init --recursive
+
 cache:
   directories:
     - "$HOME/.cache/go-build"
@@ -14,9 +21,6 @@ services:
 env:
   global:
     - GO111MODULE=on
-
-before_install:
-  - openssl aes-256-cbc -K $encrypted_7961871dbabc_key -iv $encrypted_7961871dbabc_iv -in sean-side-uat-gcr-pusher.json.enc -out sean-side-uat-gcr-pusher.json -d
 
 stages:
   - Tests
@@ -40,8 +44,14 @@ jobs:
       script:
         - make lint
     - stage: Deploy
+      install:
+        - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+        - curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl" && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
+        - echo $kubeconfig | base64 --decode > ${HOME}/kubeconfig.yaml && export KUBECONFIG=${HOME}/kubeconfig.yaml
+        - echo $gcloud_sa_key | base64 --decode > ${HOME}/key.json && export GOOGLE_APPLICATION_CREDENTIALS=${HOME}/key.json
       script:
-        - cat sean-side-uat-gcr-pusher.json | docker login -u _json_key --password-stdin https://gcr.io
+        - echo $docker_password | base64 --decode | docker login -u _json_key --password-stdin https://gcr.io
         - make build-image
         - make tag-image
         - make push-image
+        - make deploy-with-helm ns=side deploy_to=prod

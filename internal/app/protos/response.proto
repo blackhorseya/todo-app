@@ -1,0 +1,13 @@
+syntax = "proto3";
+package entities;
+option go_package = ".;entities";
+
+import "google/protobuf/any.proto";
+
+message Response {
+  bool ok = 1;
+  string msg = 2;
+  google.protobuf.Any data = 3;
+  google.protobuf.Any err = 4;
+}
+

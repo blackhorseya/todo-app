@@ -47,7 +47,13 @@ var doc = `{
                 "summary": "Liveness",
                 "responses": {
                     "200": {
-                        "description": "success",
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "type": "string"
                         }
@@ -70,7 +76,13 @@ var doc = `{
                 "summary": "Readiness",
                 "responses": {
                     "200": {
-                        "description": "success",
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "type": "string"
                         }
