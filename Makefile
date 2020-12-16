@@ -42,7 +42,8 @@ push-image:
 deploy-with-helm:
 	@helm --namespace $(ns) \
 	upgrade --install $(app_name) ./deployments/helm \
-	--values ./deployments/configs/$(deploy_to)/todo.yaml
+	--values ./deployments/configs/$(deploy_to)/todo.yaml \
+	--set image.tag=$(version)
 
 .PHONY: gen
 gen: gen-pb gen-swagger gen-wire
