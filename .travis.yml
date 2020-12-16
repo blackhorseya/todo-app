@@ -22,7 +22,7 @@ env:
 stages:
   - Tests
   - name: Deploy
-    if: branch =~ /^release-\d+\.\d+$/ AND tag =~ ^v
+    if: tag =~ ^v
 
 jobs:
   include:
