@@ -4,6 +4,7 @@ import (
 	"github.com/blackhorseya/todo-app/internal/app/middlewares"
 	"github.com/blackhorseya/todo-app/internal/app/router"
 	"github.com/blackhorseya/todo-app/internal/pkg/config"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -21,6 +22,9 @@ func NewGinEngine(r router.IRouter, config *config.Config) *gin.Engine {
 
 	// recovery
 	app.Use(gin.Recovery())
+
+	// cors
+	app.Use(cors.Default())
 
 	// frontend
 	app.Use(static.Serve("/", static.LocalFile("./web/build", true)))
