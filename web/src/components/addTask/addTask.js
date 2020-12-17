@@ -1,6 +1,8 @@
 import React from 'react';
 import {taskActions} from '../../_actions';
 import {connect} from 'react-redux';
+import TextField from '@material-ui/core/TextField';
+import {Button} from '@material-ui/core';
 
 class AddTask extends React.Component {
   constructor(props) {
@@ -25,20 +27,23 @@ class AddTask extends React.Component {
 
     this.setState({submitted: true});
     const {title} = this.state;
-    this.props.add(title);
+    if (title !== "") {
+      this.props.add(title);
+    }
   }
 
   render() {
     const {title} = this.state;
 
     return (
-        <div>
-          <form onSubmit={this.handleSubmit}>
-            <input name="title" value={title} onChange={this.handleChange}
-                   placeholder="Input title..."/>
-            <button type="submit">Add Task</button>
-          </form>
-        </div>
+        <form onSubmit={this.handleSubmit}>
+          <div>
+            <TextField name="title" value={title} onChange={this.handleChange}
+                       variant="outlined" placeholder="Title..."/>
+            <Button type="submit" variant="contained"
+                    color="primary">Add</Button>
+          </div>
+        </form>
     );
   }
 }

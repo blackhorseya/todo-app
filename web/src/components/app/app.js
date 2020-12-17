@@ -3,14 +3,19 @@ import './app.css';
 import {connect} from 'react-redux';
 import {AddTodo} from '../addTask';
 import {ListTodo} from '../listTasks';
+import Container from '@material-ui/core/Container';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 class App extends React.Component {
   render() {
     return (
-        <div className="App">
-          <AddTodo/>
-          <ListTodo/>
-        </div>
+        <React.Fragment>
+          <CssBaseline/>
+          <Container maxWidth="sm">
+            <AddTodo/>
+            <ListTodo/>
+          </Container>
+        </React.Fragment>
     );
   }
 }
