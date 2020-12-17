@@ -1,6 +1,13 @@
 import React from 'react';
 import {taskActions} from '../../_actions';
 import {connect} from 'react-redux';
+import Title from '../_shared/title';
+import {Table} from '@material-ui/core';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+import TableBody from '@material-ui/core/TableBody';
+import Checkbox from '@material-ui/core/Checkbox';
 
 class ListTasks extends React.Component {
   componentDidMount() {
@@ -11,18 +18,30 @@ class ListTasks extends React.Component {
     const {tasks} = this.props;
 
     return (
-        <div>
-          <h1>Tasks</h1>
-          <ul>
-            {
-              tasks.item && tasks.item.map((task, index) =>
-                  <li key={index}>
-                    {task.title}
-                  </li>,
-              )
-            }
-          </ul>
-        </div>
+        <React.Fragment>
+          <Title>Tasks</Title>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Completed</TableCell>
+                <TableCell>Title</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {tasks.item && tasks.item.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{row.id}</TableCell>
+                    <TableCell>
+                      <Checkbox checked={row.completed}
+                                inputProps={{'aria-label': 'primary checkbox'}}/>
+                    </TableCell>
+                    <TableCell>{row.title}</TableCell>
+                  </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </React.Fragment>
     );
   }
 }
