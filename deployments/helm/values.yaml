@@ -87,9 +87,6 @@ app: |-
     host: ""
     port: 80
 
-  swagger:
-    enabled: true
-
   log:
     format: ""
     level: "debug"
@@ -97,3 +94,6 @@ app: |-
   db:
     debug: true
     url: "mongodb://todo-app:changeme@todo-db-mongodb:27017/todo-db/?connect=direct&authSource=todo-db"
+
+env:
+  REACT_APP_API_URL: "http://localhost:8080"

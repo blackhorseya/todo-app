@@ -37,6 +37,9 @@ spec:
             - mountPath: /app/configs/app.yaml
               subPath: app.yaml
               name: configs
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-env
           ports:
             - name: http
               containerPort: 80

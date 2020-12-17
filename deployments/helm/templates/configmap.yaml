@@ -9,3 +9,15 @@ data:
 {{- if .Values.app }}
 {{ tpl .Values.app . | indent 4 }}
 {{- end }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "helm.fullname" . }}-env
+  labels:
+  {{- include "helm.labels" . | nindent 4 }}
+data:
+{{- if .Values.env }}
+{{ toYaml .Values.env | indent 2 }}
+{{- end }}
