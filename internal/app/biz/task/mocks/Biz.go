@@ -82,14 +82,14 @@ func (_m *Biz) List(page int32, size int32) ([]*entities.Task, error) {
 }
 
 // Remove provides a mock function with given fields: id
-func (_m *Biz) Remove(id string) (bool, error) {
+func (_m *Biz) Remove(id string) (int, error) {
 	ret := _m.Called(id)
 
-	var r0 bool
-	if rf, ok := ret.Get(0).(func(string) bool); ok {
+	var r0 int
+	if rf, ok := ret.Get(0).(func(string) int); ok {
 		r0 = rf(id)
 	} else {
-		r0 = ret.Get(0).(bool)
+		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error

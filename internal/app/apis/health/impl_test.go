@@ -77,27 +77,29 @@ func (s *healthTestSuite) Test_impl_Readiness() {
 		},
 	}
 	for _, tt := range tests {
-		tt.mockFunc()
-		uri := "/api/readiness"
-		req := httptest.NewRequest(http.MethodGet, uri, nil)
-		w := httptest.NewRecorder()
+		s.Run(tt.name, func() {
+			tt.mockFunc()
+			uri := "/api/readiness"
+			req := httptest.NewRequest(http.MethodGet, uri, nil)
+			w := httptest.NewRecorder()
 
-		s.r.ServeHTTP(w, req)
+			s.r.ServeHTTP(w, req)
 
-		got := w.Result()
-		defer got.Body.Close()
+			got := w.Result()
+			defer got.Body.Close()
 
-		body, _ := ioutil.ReadAll(got.Body)
-		var gotRes *entities.Response
-		err := json.Unmarshal(body, &gotRes)
-		if err != nil {
-			s.Errorf(err, "unmarshal response body")
-		}
+			body, _ := ioutil.ReadAll(got.Body)
+			var gotRes *entities.Response
+			err := json.Unmarshal(body, &gotRes)
+			if err != nil {
+				s.Errorf(err, "unmarshal response body")
+			}
 
-		s.EqualValuesf(tt.wantCode, got.StatusCode, "Readiness() code = [%v], wantCode = [%v]", got.StatusCode, tt.wantCode)
-		s.EqualValuesf(tt.wantRes, gotRes, "Readiness() res = [%v], wantRes = [%v]", gotRes, tt.wantRes)
+			s.EqualValuesf(tt.wantCode, got.StatusCode, "Readiness() code = [%v], wantCode = [%v]", got.StatusCode, tt.wantCode)
+			s.EqualValuesf(tt.wantRes, gotRes, "Readiness() res = [%v], wantRes = [%v]", gotRes, tt.wantRes)
 
-		s.TearDownTest()
+			s.TearDownTest()
+		})
 	}
 }
 
@@ -140,27 +142,29 @@ func (s *healthTestSuite) Test_impl_Liveness() {
 		},
 	}
 	for _, tt := range tests {
-		tt.mockFunc()
-		uri := "/api/liveness"
-		req := httptest.NewRequest(http.MethodGet, uri, nil)
-		w := httptest.NewRecorder()
+		s.Run(tt.name, func() {
+			tt.mockFunc()
+			uri := "/api/liveness"
+			req := httptest.NewRequest(http.MethodGet, uri, nil)
+			w := httptest.NewRecorder()
 
-		s.r.ServeHTTP(w, req)
+			s.r.ServeHTTP(w, req)
 
-		got := w.Result()
-		defer got.Body.Close()
+			got := w.Result()
+			defer got.Body.Close()
 
-		body, _ := ioutil.ReadAll(got.Body)
-		var gotRes *entities.Response
-		err := json.Unmarshal(body, &gotRes)
-		if err != nil {
-			s.Errorf(err, "unmarshal response body")
-		}
+			body, _ := ioutil.ReadAll(got.Body)
+			var gotRes *entities.Response
+			err := json.Unmarshal(body, &gotRes)
+			if err != nil {
+				s.Errorf(err, "unmarshal response body")
+			}
 
-		s.EqualValuesf(tt.wantCode, got.StatusCode, "Liveness() code = [%v], wantCode = [%v]", got.StatusCode, tt.wantCode)
-		s.EqualValuesf(tt.wantRes, gotRes, "Liveness() res = [%v], wantRes = [%v]", gotRes, tt.wantRes)
+			s.EqualValuesf(tt.wantCode, got.StatusCode, "Liveness() code = [%v], wantCode = [%v]", got.StatusCode, tt.wantCode)
+			s.EqualValuesf(tt.wantRes, gotRes, "Liveness() res = [%v], wantRes = [%v]", gotRes, tt.wantRes)
 
-		s.TearDownTest()
+			s.TearDownTest()
+		})
 	}
 }
 

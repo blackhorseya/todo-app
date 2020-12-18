@@ -9,6 +9,7 @@ import (
 type IHandler interface {
 	List(c *gin.Context)
 	Create(c *gin.Context)
+	Remove(c *gin.Context)
 }
 
 // ProviderSet is a task of api provider set

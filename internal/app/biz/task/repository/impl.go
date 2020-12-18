@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/blackhorseya/todo-app/internal/app/entities"
@@ -21,7 +22,7 @@ func NewImpl(mongoClient *mongo.Client) TaskRepo {
 
 // QueryTaskList handle query task list by limit and offset
 func (i *impl) QueryTaskList(limit, offset int32) (tasks []*entities.Task, err error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	coll := i.MongoClient.Database("todo-db").Collection("tasks")
@@ -51,10 +52,27 @@ func (i *impl) QueryTaskList(limit, offset int32) (tasks []*entities.Task, err e
 // CreateTask handle create a task
 func (i *impl) CreateTask(newTask *entities.Task) (task *entities.Task, err error) {
 	coll := i.MongoClient.Database("todo-db").Collection("tasks")
-	_, err = coll.InsertOne(context.TODO(), newTask)
+	_, err = coll.InsertOne(context.Background(), newTask)
 	if err != nil {
 		return newTask, err
 	}
 
 	return newTask, nil
+}
+
+// RemoveTask handle remove a task in repository
+func (i *impl) RemoveTask(id string) (count int, err error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	coll := i.MongoClient.Database("todo-db").Collection("tasks")
+	res, err := coll.DeleteOne(ctx, bson.M{"id": id})
+	if err != nil {
+		return 0, err
+	}
+	if res.DeletedCount == 0 {
+		return 0, fmt.Errorf("not found id: %s", id)
+	}
+
+	return int(res.DeletedCount), nil
 }

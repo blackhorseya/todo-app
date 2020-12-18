@@ -34,7 +34,7 @@ func NewGinEngine(r router.IRouter, config *config.Config) *gin.Engine {
 
 	// swagger
 	if mode := gin.Mode(); mode == gin.DebugMode {
-		app.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+		app.GET("/api/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 
 	return app

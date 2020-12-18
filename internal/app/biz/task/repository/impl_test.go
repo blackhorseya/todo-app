@@ -3,9 +3,11 @@
 package repository
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/blackhorseya/todo-app/internal/app/entities"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -23,6 +25,8 @@ func (s *repoTestSuite) SetupTest() {
 }
 
 func (s *repoTestSuite) Test_impl_CreateTask() {
+	id1 := uuid.New().String()
+
 	type args struct {
 		newTask *entities.Task
 	}
@@ -35,9 +39,11 @@ func (s *repoTestSuite) Test_impl_CreateTask() {
 		{
 			name: "task then task nil",
 			args: args{&entities.Task{
+				Id:    id1,
 				Title: "test",
 			}},
 			wantTask: &entities.Task{
+				Id:    id1,
 				Title: "test",
 			},
 			wantErr: "",
@@ -74,9 +80,9 @@ func (s *repoTestSuite) Test_impl_QueryTaskList() {
 			name: "3 0 then []task nil",
 			args: args{3, 0},
 			wantTasks: []*entities.Task{
-				{Title: "test"},
-				{Title: "test"},
-				{Title: "test"},
+				{Title: "test1"},
+				{Title: "test2"},
+				{Title: "test3"},
 			},
 			wantErr: "",
 		},
@@ -88,6 +94,32 @@ func (s *repoTestSuite) Test_impl_QueryTaskList() {
 			return
 		}
 		s.EqualValuesf(tt.wantTasks, gotTasks, "QueryTaskList() gotTasks = %v, want %v", gotTasks, tt.wantTasks)
+	}
+}
+
+func (s *repoTestSuite) Test_impl_RemoveTask() {
+	type args struct {
+		id string
+	}
+	tests := []struct {
+		name      string
+		args      args
+		wantCount int
+		wantErr   error
+	}{
+		{
+			name:      "empty then 0 error",
+			args:      args{},
+			wantCount: 0,
+			wantErr:   errors.New("not found id: "),
+		},
+	}
+	for _, tt := range tests {
+		count, err := s.taskRepo.RemoveTask(tt.args.id)
+		if err != nil {
+			s.EqualErrorf(err, tt.wantErr.Error(), "RemoveTask() error = %v, wantErr = %v", err, tt.wantErr)
+		}
+		s.EqualValuesf(tt.wantCount, count, "RemoveTask() count = %v, wantCount = %v", count, tt.wantCount)
 	}
 }
 

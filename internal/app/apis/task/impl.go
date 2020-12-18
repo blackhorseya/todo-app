@@ -36,15 +36,18 @@ func (i *impl) List(c *gin.Context) {
 	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
 	if err != nil {
 		_ = c.AbortWithError(http.StatusBadRequest, err).SetType(gin.ErrorTypePublic)
+		return
 	}
 	size, err := strconv.Atoi(c.DefaultQuery("size", "3"))
 	if err != nil {
 		_ = c.AbortWithError(http.StatusBadRequest, err).SetType(gin.ErrorTypePublic)
+		return
 	}
 
 	tasks, _ := i.TaskBiz.List(int32(page), int32(size))
 	if len(tasks) == 0 {
-		c.String(http.StatusNoContent, "")
+		c.String(http.StatusNotFound, "")
+		return
 	}
 
 	c.JSON(http.StatusOK, tasks)
@@ -94,4 +97,36 @@ func (i *impl) Create(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, ret)
+}
+
+type removeReq struct {
+	ID string `uri:"id" binding:"required,uuid"`
+}
+
+// Remove a task
+// @Summary Remove
+// @Description remove a task
+// @Tags Task
+// @Accept application/json
+// @Produce application/json
+// @Param id path string true "Task ID"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Success 404 {object} string
+// @Failure 500 {object} string
+// @Router /v1/tasks/{id} [delete]
+func (i *impl) Remove(c *gin.Context) {
+	var req removeReq
+	err := c.ShouldBindUri(&req)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err)
+		return
+	}
+
+	count, err := i.TaskBiz.Remove(req.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+	}
+
+	c.JSON(http.StatusOK, count)
 }

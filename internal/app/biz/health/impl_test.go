@@ -55,13 +55,15 @@ func (s *bizTestSuite) Test_impl_Readiness() {
 		},
 	}
 	for _, tt := range tests {
-		tt.mockFunc()
-		gotOk, err := s.healthBiz.Readiness()
-		if err != nil {
-			s.EqualErrorf(err, tt.wantErr, "Readiness() error = %v, wantErr %v", err, tt.wantErr)
-		}
-		s.EqualValuesf(tt.wantOk, gotOk, "Readiness() gotOk = %v, want %v", gotOk, tt.wantOk)
-		s.TearDownTest()
+		s.Run(tt.name, func() {
+			tt.mockFunc()
+			gotOk, err := s.healthBiz.Readiness()
+			if err != nil {
+				s.EqualErrorf(err, tt.wantErr, "Readiness() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			s.EqualValuesf(tt.wantOk, gotOk, "Readiness() gotOk = %v, want %v", gotOk, tt.wantOk)
+			s.TearDownTest()
+		})
 	}
 }
 
@@ -91,13 +93,15 @@ func (s *bizTestSuite) Test_impl_Liveness() {
 		},
 	}
 	for _, tt := range tests {
-		tt.mockFunc()
-		gotOk, err := s.healthBiz.Liveness()
-		if err != nil {
-			s.EqualErrorf(err, tt.wantErr, "Liveness() error = %v, wantErr %v", err, tt.wantErr)
-		}
-		s.EqualValuesf(tt.wantOk, gotOk, "Liveness() gotOk = %v, want %v", gotOk, tt.wantOk)
-		s.TearDownTest()
+		s.Run(tt.name, func() {
+			tt.mockFunc()
+			gotOk, err := s.healthBiz.Liveness()
+			if err != nil {
+				s.EqualErrorf(err, tt.wantErr, "Liveness() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			s.EqualValuesf(tt.wantOk, gotOk, "Liveness() gotOk = %v, want %v", gotOk, tt.wantOk)
+			s.TearDownTest()
+		})
 	}
 }
 

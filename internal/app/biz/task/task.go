@@ -9,7 +9,7 @@ import (
 // Biz describe task business service function
 type Biz interface {
 	Create(newTask *entities.Task) (task *entities.Task, err error)
-	Remove(id string) (ok bool, err error)
+	Remove(id string) (count int, err error)
 	UpdateStatus(id string, completed bool) (task *entities.Task, err error)
 	ChangeTitle(id, newTitle string) (task *entities.Task, err error)
 	List(page, size int32) (tasks []*entities.Task, err error)
