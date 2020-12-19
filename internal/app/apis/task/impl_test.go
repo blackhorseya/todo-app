@@ -263,6 +263,98 @@ func (s *taskTestSuite) Test_impl_Remove() {
 	}
 }
 
+func (s *taskTestSuite) Test_impl_ModifyInfo() {
+	s.r.PATCH("/api/v1/tasks/:id", s.taskHandler.ModifyInfo)
+
+	type args struct {
+		id        string
+		completed int
+		title     string
+		body      *modifyBody
+	}
+	tests := []struct {
+		name     string
+		args     args
+		mockFunc func()
+		wantCode int
+	}{
+		{
+			name: "missing id then 404",
+			args: args{id: ""},
+			mockFunc: func() {
+
+			},
+			wantCode: 404,
+		},
+		{
+			name: "id then 404",
+			args: args{id: "id"},
+			mockFunc: func() {
+
+			},
+			wantCode: 404,
+		},
+		{
+			name: "uuid then 400",
+			args: args{id: "f3d58c97-e50e-4a00-ba51-ef7d2bec02e0"},
+			mockFunc: func() {
+
+			},
+			wantCode: 400,
+		},
+		{
+			name: "uuid completed then 200",
+			args: args{id: "f3d58c97-e50e-4a00-ba51-ef7d2bec02e0", completed: 1},
+			mockFunc: func() {
+				s.mockBiz.On("UpdateStatus", "f3d58c97-e50e-4a00-ba51-ef7d2bec02e0", false).Return(
+					&entities.Task{
+						Id:        "f3d58c97-e50e-4a00-ba51-ef7d2bec02e0",
+						Completed: false,
+					}, nil).Once()
+			},
+			wantCode: 200,
+		},
+		{
+			name: "uuid title then 200",
+			args: args{id: "f3d58c97-e50e-4a00-ba51-ef7d2bec02e0", title: "title"},
+			mockFunc: func() {
+				s.mockBiz.On("ChangeTitle", "f3d58c97-e50e-4a00-ba51-ef7d2bec02e0", "title").Return(
+					&entities.Task{
+						Id:    "f3d58c97-e50e-4a00-ba51-ef7d2bec02e0",
+						Title: "title",
+					}, nil).Once()
+			},
+			wantCode: 200,
+		},
+		{
+			name: "uuid title empty then 400",
+			args: args{id: "f3d58c97-e50e-4a00-ba51-ef7d2bec02e0", title: ""},
+			mockFunc: func() {
+
+			},
+			wantCode: 400,
+		},
+	}
+	for _, tt := range tests {
+		s.Run(tt.name, func() {
+			tt.mockFunc()
+
+			uri := fmt.Sprintf("/api/v1/tasks/%s?completed=%v&title=%v", tt.args.id, tt.args.completed, tt.args.title)
+			req := httptest.NewRequest(http.MethodPatch, uri, nil)
+			w := httptest.NewRecorder()
+
+			s.r.ServeHTTP(w, req)
+
+			got := w.Result()
+			defer got.Body.Close()
+
+			s.EqualValuesf(tt.wantCode, got.StatusCode, "ModifyInfo() code = [%v], wantCode = [%v]", got.StatusCode, tt.wantCode)
+
+			s.TearDownTest()
+		})
+	}
+}
+
 func TestTaskHandler(t *testing.T) {
 	suite.Run(t, new(taskTestSuite))
 }

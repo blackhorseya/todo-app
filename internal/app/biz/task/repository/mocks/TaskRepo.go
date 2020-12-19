@@ -35,6 +35,29 @@ func (_m *TaskRepo) CreateTask(newTask *entities.Task) (*entities.Task, error) {
 	return r0, r1
 }
 
+// FindOne provides a mock function with given fields: id
+func (_m *TaskRepo) FindOne(id string) (*entities.Task, error) {
+	ret := _m.Called(id)
+
+	var r0 *entities.Task
+	if rf, ok := ret.Get(0).(func(string) *entities.Task); ok {
+		r0 = rf(id)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*entities.Task)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // QueryTaskList provides a mock function with given fields: limit, offset
 func (_m *TaskRepo) QueryTaskList(limit int32, offset int32) ([]*entities.Task, error) {
 	ret := _m.Called(limit, offset)
@@ -72,6 +95,29 @@ func (_m *TaskRepo) RemoveTask(id string) (int, error) {
 	var r1 error
 	if rf, ok := ret.Get(1).(func(string) error); ok {
 		r1 = rf(id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UpdateTask provides a mock function with given fields: updated
+func (_m *TaskRepo) UpdateTask(updated *entities.Task) (*entities.Task, error) {
+	ret := _m.Called(updated)
+
+	var r0 *entities.Task
+	if rf, ok := ret.Get(0).(func(*entities.Task) *entities.Task); ok {
+		r0 = rf(updated)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*entities.Task)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(*entities.Task) error); ok {
+		r1 = rf(updated)
 	} else {
 		r1 = ret.Error(1)
 	}

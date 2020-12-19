@@ -13,7 +13,7 @@ import (
 
 type bizTestSuite struct {
 	suite.Suite
-	taskRepo *mocks.TaskRepo
+	mockRepo *mocks.TaskRepo
 	taskBiz  Biz
 }
 
@@ -21,8 +21,8 @@ func (s *bizTestSuite) SetupSuite() {
 }
 
 func (s *bizTestSuite) SetupTest() {
-	s.taskRepo = new(mocks.TaskRepo)
-	biz, err := CreateTaskBiz(s.taskRepo)
+	s.mockRepo = new(mocks.TaskRepo)
+	biz, err := CreateTaskBiz(s.mockRepo)
 	if err != nil {
 		panic(err)
 	}
@@ -30,7 +30,7 @@ func (s *bizTestSuite) SetupTest() {
 }
 
 func (s *bizTestSuite) TearDownTest() {
-	s.taskRepo.AssertExpectations(s.T())
+	s.mockRepo.AssertExpectations(s.T())
 }
 
 func (s *bizTestSuite) Test_impl_Create() {
@@ -63,7 +63,7 @@ func (s *bizTestSuite) Test_impl_Create() {
 			},
 			wantErr: "",
 			mockFunc: func() {
-				s.taskRepo.On("CreateTask", mock.AnythingOfType("*entities.Task")).Return(&entities.Task{
+				s.mockRepo.On("CreateTask", mock.AnythingOfType("*entities.Task")).Return(&entities.Task{
 					Title: "123",
 				}, nil).Once()
 			},
@@ -76,7 +76,7 @@ func (s *bizTestSuite) Test_impl_Create() {
 			wantTask: nil,
 			wantErr:  "test error",
 			mockFunc: func() {
-				s.taskRepo.On("CreateTask", mock.AnythingOfType("*entities.Task")).Return(
+				s.mockRepo.On("CreateTask", mock.AnythingOfType("*entities.Task")).Return(
 					nil, fmt.Errorf("test error")).Once()
 			},
 		},
@@ -112,7 +112,7 @@ func (s *bizTestSuite) Test_impl_List() {
 			name: "list 1 3 then tasks[3] nil",
 			args: args{1, 3},
 			mockFunc: func() {
-				s.taskRepo.On("QueryTaskList", mock.AnythingOfType("int32"), mock.AnythingOfType("int32")).Return(
+				s.mockRepo.On("QueryTaskList", mock.AnythingOfType("int32"), mock.AnythingOfType("int32")).Return(
 					[]*entities.Task{
 						{Title: "1"},
 						{Title: "2"},
@@ -130,7 +130,7 @@ func (s *bizTestSuite) Test_impl_List() {
 			name: "list 1 3 then nil error",
 			args: args{1, 3},
 			mockFunc: func() {
-				s.taskRepo.On("QueryTaskList", mock.AnythingOfType("int32"), mock.AnythingOfType("int32")).Return(
+				s.mockRepo.On("QueryTaskList", mock.AnythingOfType("int32"), mock.AnythingOfType("int32")).Return(
 					nil, errors.New("test error")).Once()
 			},
 			wantTasks: nil,
@@ -183,7 +183,7 @@ func (s *bizTestSuite) Test_impl_Remove() {
 			wantCount: 0,
 			wantErr:   errors.New("test error"),
 			mockFunc: func() {
-				s.taskRepo.On("RemoveTask", mock.AnythingOfType("string")).Return(
+				s.mockRepo.On("RemoveTask", mock.AnythingOfType("string")).Return(
 					0, errors.New("test error")).Once()
 			},
 		},
@@ -193,7 +193,7 @@ func (s *bizTestSuite) Test_impl_Remove() {
 			wantCount: 1,
 			wantErr:   nil,
 			mockFunc: func() {
-				s.taskRepo.On("RemoveTask", mock.AnythingOfType("string")).Return(1, nil).Once()
+				s.mockRepo.On("RemoveTask", mock.AnythingOfType("string")).Return(1, nil).Once()
 			},
 		},
 	}
@@ -205,6 +205,131 @@ func (s *bizTestSuite) Test_impl_Remove() {
 				s.EqualErrorf(err, tt.wantErr.Error(), "[%s] Remove() error = %v, wantErr %v", tt.name, err, tt.wantErr)
 			}
 			s.EqualValuesf(tt.wantCount, gotCount, "[%s] Remove() gotCount = %v, want %v", tt.name, gotCount, tt.wantCount)
+
+			s.TearDownTest()
+		})
+	}
+}
+
+func (s *bizTestSuite) Test_impl_UpdateStatus() {
+	type args struct {
+		id        string
+		completed bool
+	}
+	tests := []struct {
+		name     string
+		args     args
+		mockFunc func()
+		wantTask *entities.Task
+		wantErr  bool
+	}{
+		{
+			name: "id false then nil error",
+			args: args{"id", false},
+			mockFunc: func() {
+
+			},
+			wantTask: nil,
+			wantErr:  true,
+		},
+		{
+			name: "f3d58c97-e50e-4a00-ba51-ef7d2bec02e0 false then task nil",
+			args: args{"f3d58c97-e50e-4a00-ba51-ef7d2bec02e0", false},
+			mockFunc: func() {
+				s.mockRepo.On("FindOne", mock.AnythingOfType("string")).Return(
+					&entities.Task{
+						Id:        "f3d58c97-e50e-4a00-ba51-ef7d2bec02e0",
+						Completed: true,
+					}, nil).Once()
+				s.mockRepo.On("UpdateTask", mock.AnythingOfType("*entities.Task")).Return(
+					&entities.Task{
+						Id:        "f3d58c97-e50e-4a00-ba51-ef7d2bec02e0",
+						Completed: false,
+					}, nil).Once()
+			},
+			wantTask: &entities.Task{
+				Id:        "f3d58c97-e50e-4a00-ba51-ef7d2bec02e0",
+				Completed: false,
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		s.Run(tt.name, func() {
+			tt.mockFunc()
+			gotTask, err := s.taskBiz.UpdateStatus(tt.args.id, tt.args.completed)
+			if (err != nil) != tt.wantErr {
+				s.Errorf(err, "UpdateStatus() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			s.EqualValuesf(tt.wantTask, gotTask, "UpdateStatus() gotTask = %v, want %v", gotTask, tt.wantTask)
+
+			s.TearDownTest()
+		})
+	}
+}
+
+func (s *bizTestSuite) Test_impl_ChangeTitle() {
+	type args struct {
+		id       string
+		newTitle string
+	}
+	tests := []struct {
+		name     string
+		args     args
+		mockFunc func()
+		wantTask *entities.Task
+		wantErr  bool
+	}{
+		{
+			name: "id test then nil error",
+			args: args{"id", "test"},
+			mockFunc: func() {
+
+			},
+			wantTask: nil,
+			wantErr:  true,
+		},
+		{
+			name: "uuid empty then nil error",
+			args: args{"f3d58c97-e50e-4a00-ba51-ef7d2bec02e0", ""},
+			mockFunc: func() {
+
+			},
+			wantTask: nil,
+			wantErr:  true,
+		},
+		{
+			name: "uuid test then task nil",
+			args: args{"f3d58c97-e50e-4a00-ba51-ef7d2bec02e0", "test"},
+			mockFunc: func() {
+				s.mockRepo.On("FindOne", "f3d58c97-e50e-4a00-ba51-ef7d2bec02e0").Return(
+					&entities.Task{
+						Id:    "f3d58c97-e50e-4a00-ba51-ef7d2bec02e0",
+						Title: "exist",
+					}, nil).Once()
+				s.mockRepo.On("UpdateTask", mock.AnythingOfType("*entities.Task")).Return(
+					&entities.Task{
+						Id:    "f3d58c97-e50e-4a00-ba51-ef7d2bec02e0",
+						Title: "test",
+					}, nil).Once()
+			},
+			wantTask: &entities.Task{
+				Id:    "f3d58c97-e50e-4a00-ba51-ef7d2bec02e0",
+				Title: "test",
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		s.Run(tt.name, func() {
+			tt.mockFunc()
+			gotTask, err := s.taskBiz.ChangeTitle(tt.args.id, tt.args.newTitle)
+			if (err != nil) != tt.wantErr {
+				s.Errorf(err, "ChangeTitle() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			s.EqualValuesf(tt.wantTask, gotTask, "ChangeTitle() gotTask = %v, want %v", gotTask, tt.wantTask)
 
 			s.TearDownTest()
 		})

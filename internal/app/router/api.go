@@ -20,6 +20,7 @@ func (r *Router) RegisterAPI(app *gin.Engine) {
 				tasks.GET("", r.TaskHandler.List)
 				tasks.POST("", r.TaskHandler.Create)
 				tasks.DELETE("/:id", r.TaskHandler.Remove)
+				tasks.PATCH("/:id", r.TaskHandler.ModifyInfo)
 			}
 		}
 	}

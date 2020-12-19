@@ -123,6 +123,73 @@ func (s *repoTestSuite) Test_impl_RemoveTask() {
 	}
 }
 
+func (s *repoTestSuite) Test_impl_UpdateTask() {
+	type args struct {
+		updated *entities.Task
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantTask *entities.Task
+		wantErr  bool
+	}{
+		{
+			name: "fffc8c20-6dff-4e05-80ae-9eb12fb59bfe title then task nil",
+			args: args{&entities.Task{
+				Id:    "fffc8c20-6dff-4e05-80ae-9eb12fb59bfe",
+				Title: "test1",
+			}},
+			wantTask: &entities.Task{
+				Id:    "fffc8c20-6dff-4e05-80ae-9eb12fb59bfe",
+				Title: "test1",
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		s.Run(tt.name, func() {
+			gotTask, err := s.taskRepo.UpdateTask(tt.args.updated)
+			if (err != nil) != tt.wantErr {
+				s.T().Errorf("UpdateTask() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			s.EqualValuesf(tt.wantTask, gotTask, "UpdateTask() gotTask = %v, want %v", gotTask, tt.wantTask)
+		})
+	}
+}
+
+func (s *repoTestSuite) Test_impl_FindOne() {
+	type args struct {
+		id string
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantTask *entities.Task
+		wantErr  bool
+	}{
+		{
+			name: "856b0ab5-a737-48ae-b75a-86e13ef91bbf then task nil",
+			args: args{"856b0ab5-a737-48ae-b75a-86e13ef91bbf"},
+			wantTask: &entities.Task{
+				Id:    "856b0ab5-a737-48ae-b75a-86e13ef91bbf",
+				Title: "test",
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		s.Run(tt.name, func() {
+			gotTask, err := s.taskRepo.FindOne(tt.args.id)
+			if (err != nil) != tt.wantErr {
+				s.T().Errorf("FindOne() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			s.EqualValuesf(tt.wantTask, gotTask, "FindOne() gotTask = %v, want %v", gotTask, tt.wantTask)
+		})
+	}
+}
+
 func TestTaskRepo(t *testing.T) {
 	suite.Run(t, new(repoTestSuite))
 }

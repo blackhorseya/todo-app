@@ -20,6 +20,24 @@ func NewImpl(mongoClient *mongo.Client) TaskRepo {
 	return &impl{MongoClient: mongoClient}
 }
 
+func (i *impl) FindOne(id string) (task *entities.Task, err error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	coll := i.MongoClient.Database("todo-db").Collection("tasks")
+	res := coll.FindOne(ctx, bson.D{{"id", id}})
+	if res.Err() != nil {
+		return nil, res.Err()
+	}
+
+	err = res.Decode(&task)
+	if err != nil {
+		return nil, err
+	}
+
+	return task, nil
+}
+
 // QueryTaskList handle query task list by limit and offset
 func (i *impl) QueryTaskList(limit, offset int32) (tasks []*entities.Task, err error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -75,4 +93,20 @@ func (i *impl) RemoveTask(id string) (count int, err error) {
 	}
 
 	return int(res.DeletedCount), nil
+}
+
+func (i *impl) UpdateTask(newTask *entities.Task) (task *entities.Task, err error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	coll := i.MongoClient.Database("todo-db").Collection("tasks")
+
+	filter := bson.D{{"id", newTask.Id}}
+	update := bson.D{{"$set", newTask}}
+	res := coll.FindOneAndUpdate(ctx, filter, update)
+	if res.Err() != nil {
+		return nil, err
+	}
+
+	return newTask, nil
 }

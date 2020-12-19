@@ -158,4 +158,48 @@ paths:
       summary: Remove
       tags:
       - Task
+    patch:
+      consumes:
+      - application/json
+      description: modify information of task
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: completed of task
+        in: query
+        name: completed
+        type: string
+      - description: title of task
+        in: query
+        name: title
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: ModifyInfo
+      tags:
+      - Task
 swagger: "2.0"

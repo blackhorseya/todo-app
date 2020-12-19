@@ -4,6 +4,10 @@ project_id = sean-side
 ns = side
 deploy_to = uat
 
+.PHONY: clean
+clean:
+	@rm -rf coverage.txt profile.out bin
+
 .PHONY: build-image
 build-image:
 	@docker build -t $(app_name):$(version) \
