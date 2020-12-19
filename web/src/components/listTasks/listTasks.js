@@ -1,12 +1,17 @@
 import React from 'react';
 import {taskActions} from '../../_actions';
 import {connect} from 'react-redux';
-import {Paper, Table, TableContainer} from '@material-ui/core';
+import {
+  IconButton,
+  Paper,
+  Table,
+  TableContainer,
+} from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
-import Checkbox from '@material-ui/core/Checkbox';
 import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
 
@@ -42,23 +47,24 @@ class ListTasks extends React.Component {
     return (
         <TableContainer component={Paper}>
           <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>Completed</TableCell>
-                <TableCell>Title</TableCell>
-              </TableRow>
-            </TableHead>
             <TableBody>
-              {tasks.item && tasks.item.map((row, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{row.id}</TableCell>
+              {tasks.item && tasks.item.map((row) => (
+                  <TableRow key={row.id}>
                     <TableCell>
-                      <Checkbox checked={row.completed}
-                                inputProps={{'aria-label': 'primary checkbox'}}/>
+                      <IconButton>
+                        <span className="material-icons">
+                          {row.completed
+                              ? 'task_alt'
+                              : 'radio_button_unchecked'}
+                        </span>
+                      </IconButton>
                     </TableCell>
-                    <TableCell component="th"
-                               scope="row">{row.title}</TableCell>
+                    <TableCell>{row.title}</TableCell>
+                    <TableCell>
+                      <IconButton>
+                        <DeleteIcon/>
+                      </IconButton>
+                    </TableCell>
                   </TableRow>
               ))}
             </TableBody>

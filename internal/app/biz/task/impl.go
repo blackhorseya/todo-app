@@ -52,6 +52,9 @@ func (i *impl) UpdateStatus(id string, completed bool) (task *entities.Task, err
 
 	exist.Completed = completed
 	task, err = i.TaskRepo.UpdateTask(exist)
+	if err != nil {
+		return nil, err
+	}
 
 	return task, nil
 }
