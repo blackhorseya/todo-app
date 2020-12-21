@@ -58,5 +58,5 @@ const actionCreators = {
   add: taskActions.add,
 };
 
-const connectedAddTodo = connect(mapStateToProps, actionCreators)(AddTask);
-export {connectedAddTodo as AddTask};
+const connectedAddTask = connect(mapStateToProps, actionCreators)(AddTask);
+export {connectedAddTask as AddTask};

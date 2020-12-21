@@ -38,8 +38,18 @@ function remove(id) {
   return fetch(`${apiUrl}api/v1/tasks/${id}`, reqOpt).then(handleResponse);
 }
 
+function changeStatus(id, completed) {
+  const reqOpt = {
+    method: 'PATCH',
+  };
+
+  return fetch(`${apiUrl}api/v1/tasks/${id}?completed=${completed}`, reqOpt)
+      .then(handleResponse);
+}
+
 export const taskServices = {
   list,
   add,
   remove,
+  changeStatus,
 };

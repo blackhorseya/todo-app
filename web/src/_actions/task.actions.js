@@ -67,8 +67,48 @@ function remove(id) {
   };
 }
 
+function changeStatus(id, completed) {
+  // action creators
+  function request(
+      id, completed) {
+    return {
+      type: taskConstants.CHANGE_STATUS_REQUEST,
+      id,
+      completed,
+    };
+  }
+
+  function success(
+      id, completed) {
+    return {
+      type: taskConstants.CHANGE_STATUS_SUCCESS,
+      id,
+      completed,
+    };
+  }
+
+  function failure(error) {
+    return {
+      type: taskConstants.CHANGE_STATUS_FAILURE,
+      error,
+    };
+  }
+
+  // actions
+  return (dispatch) => {
+    dispatch(request(id, completed));
+
+    // remove task
+    taskServices.changeStatus(id, completed).then(
+        (data) => dispatch(success(id, completed)),
+        (error) => dispatch(failure(error.toString())),
+    );
+  };
+}
+
 export const taskActions = {
   list,
   add,
   remove,
+  changeStatus,
 };

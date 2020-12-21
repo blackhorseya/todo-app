@@ -40,6 +40,24 @@ export function tasks(state = {}, action) {
       return {
         error: action.error,
       };
+    case taskConstants.CHANGE_STATUS_REQUEST:
+      return {
+        item: state.item,
+      };
+    case taskConstants.CHANGE_STATUS_SUCCESS:
+      return {
+        item: state.item.map((task) => {
+          if (task.id === action.id) {
+            return {...task, completed: action.completed === 2};
+          } else {
+            return task;
+          }
+        }),
+      };
+    case taskConstants.CHANGE_STATUS_FAILURE:
+      return {
+        error: action.error,
+      };
     default:
       return state;
   }

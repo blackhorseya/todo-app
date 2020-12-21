@@ -24,10 +24,19 @@ class ListTasks extends React.Component {
     this.handleNextPage = this.handleNextPage.bind(this);
     this.handleBackPage = this.handleBackPage.bind(this);
     this.handleRemoveTask = this.handleRemoveTask.bind(this);
+    this.handleChangeStatus = this.handleChangeStatus.bind(this);
   }
 
   handleRemoveTask(id) {
     this.props.remove(id);
+  }
+
+  handleChangeStatus(id, completed) {
+    if (completed === undefined || !completed) {
+      this.props.changeStatus(id, 2)
+    } else {
+      this.props.changeStatus(id, 1)
+    }
   }
 
   handleFirstPage(e) {
@@ -56,7 +65,9 @@ class ListTasks extends React.Component {
               {tasks.item && tasks.item.map((row) => (
                   <TableRow key={row.id}>
                     <TableCell>
-                      <IconButton>
+                      <IconButton
+                          onClick={() => this.handleChangeStatus(row.id,
+                              row.completed)}>
                         <span className="material-icons">
                           {row.completed
                               ? 'task_alt'
@@ -94,7 +105,8 @@ function mapStateToProps(state) {
 const actionCreators = {
   list: taskActions.list,
   remove: taskActions.remove,
+  changeStatus: taskActions.changeStatus,
 };
 
-const connectedListTodo = connect(mapStateToProps, actionCreators)(ListTasks);
-export {connectedListTodo as ListTasks};
+const connectedListTasks = connect(mapStateToProps, actionCreators)(ListTasks);
+export {connectedListTasks as ListTasks};
