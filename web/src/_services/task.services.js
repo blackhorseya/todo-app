@@ -30,7 +30,16 @@ function add(title) {
   return fetch(`${apiUrl}api/v1/tasks`, reqOpt).then(handleResponse);
 }
 
+function remove(id) {
+  const reqOpt = {
+    method: 'DELETE',
+  };
+
+  return fetch(`${apiUrl}api/v1/tasks/${id}`, reqOpt).then(handleResponse);
+}
+
 export const taskServices = {
   list,
   add,
+  remove,
 };

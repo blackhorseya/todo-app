@@ -23,6 +23,11 @@ class ListTasks extends React.Component {
     this.handleLastPage = this.handleLastPage.bind(this);
     this.handleNextPage = this.handleNextPage.bind(this);
     this.handleBackPage = this.handleBackPage.bind(this);
+    this.handleRemoveTask = this.handleRemoveTask.bind(this);
+  }
+
+  handleRemoveTask(id) {
+    this.props.remove(id);
   }
 
   handleFirstPage(e) {
@@ -61,18 +66,20 @@ class ListTasks extends React.Component {
                     </TableCell>
                     <TableCell>{row.title}</TableCell>
                     <TableCell>
-                      <IconButton>
+                      <IconButton onClick={() => this.handleRemoveTask(row.id)}
+                                  edge="end"
+                                  aria-label="delete">
                         <DeleteIcon/>
                       </IconButton>
                     </TableCell>
                   </TableRow>
               ))}
             </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TablePagination rowsPerPageOptions={[10, 50]}/>
-              </TableRow>
-            </TableFooter>
+            {/*<TableFooter>*/}
+            {/*  <TableRow>*/}
+            {/*    <TablePagination rowsPerPageOptions={[10, 50]}/>*/}
+            {/*  </TableRow>*/}
+            {/*</TableFooter>*/}
           </Table>
         </TableContainer>
     );
@@ -86,7 +93,8 @@ function mapStateToProps(state) {
 
 const actionCreators = {
   list: taskActions.list,
+  remove: taskActions.remove,
 };
 
 const connectedListTodo = connect(mapStateToProps, actionCreators)(ListTasks);
-export {connectedListTodo as ListTodo};
+export {connectedListTodo as ListTasks};

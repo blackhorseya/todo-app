@@ -1,5 +1,6 @@
 import {taskConstants} from '../_constants';
 import {taskServices} from '../_services';
+import {func} from 'prop-types';
 
 function list() {
   // action creators
@@ -46,7 +47,28 @@ function add(title) {
   };
 }
 
+function remove(id) {
+  // action creators
+  function request(id) {return {type: taskConstants.REMOVE_REQUEST, id};}
+
+  function success(id) {return {type: taskConstants.REMOVE_SUCCESS, id};}
+
+  function failure(error) {return {type: taskConstants.REMOVE_FAILURE, error};}
+
+  // actions
+  return (dispatch) => {
+    dispatch(request({id}));
+
+    // remove task
+    taskServices.remove(id).then(
+        (data) => dispatch(success(data)),
+        (error) => dispatch(failure(error.toString())),
+    );
+  };
+}
+
 export const taskActions = {
   list,
   add,
+  remove,
 };

@@ -27,8 +27,9 @@ class AddTask extends React.Component {
 
     this.setState({submitted: true});
     const {title} = this.state;
-    if (title !== "") {
+    if (title !== '') {
       this.props.add(title);
+      this.state.title = '';
     }
   }
 
@@ -58,4 +59,4 @@ const actionCreators = {
 };
 
 const connectedAddTodo = connect(mapStateToProps, actionCreators)(AddTask);
-export {connectedAddTodo as AddTodo};
+export {connectedAddTodo as AddTask};

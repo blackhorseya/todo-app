@@ -8,7 +8,6 @@ import (
 	"github.com/blackhorseya/todo-app/internal/app/entities"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	"google.golang.org/protobuf/types/known/anypb"
 )
 
 type impl struct {
@@ -158,13 +157,7 @@ func (i *impl) Create(c *gin.Context) {
 		return
 	}
 
-	any, _ := anypb.New(data)
-	ret := &entities.Response{
-		Ok:   true,
-		Data: any,
-	}
-
-	c.JSON(http.StatusCreated, ret)
+	c.JSON(http.StatusCreated, data)
 }
 
 type removeReq struct {
@@ -191,10 +184,10 @@ func (i *impl) Remove(c *gin.Context) {
 		return
 	}
 
-	count, err := i.TaskBiz.Remove(req.ID)
+	_, err = i.TaskBiz.Remove(req.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 	}
 
-	c.JSON(http.StatusOK, count)
+	c.JSON(http.StatusOK, req.ID)
 }
