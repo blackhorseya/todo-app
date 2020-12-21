@@ -17,6 +17,9 @@ func NewGinEngine(r router.IRouter, config *config.Config) *gin.Engine {
 
 	app := gin.New()
 
+	// context
+	app.Use(middlewares.ContextMiddleware())
+
 	// logger
 	app.Use(middlewares.LoggerMiddleware())
 

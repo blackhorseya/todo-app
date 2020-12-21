@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/blackhorseya/todo-app/internal/pkg/ctx"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -35,8 +36,10 @@ func LoggerMiddleware() gin.HandlerFunc {
 		if dataLength < 0 {
 			dataLength = 0
 		}
+		traceID := c.MustGet("ctx").(ctx.CTX).Value("traceID").(string)
 
 		entry := logrus.WithFields(logrus.Fields{
+			"traceID":    traceID,
 			"duration":   duration,
 			"hostname":   hostname,
 			"statusCode": statusCode,
