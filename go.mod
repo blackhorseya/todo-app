@@ -14,6 +14,7 @@ require (
 	github.com/google/wire v0.4.0
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/sirupsen/logrus v1.7.0
+	github.com/spf13/cobra v0.0.3
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.6.1
 	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14

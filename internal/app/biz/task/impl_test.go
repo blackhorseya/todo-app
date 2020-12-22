@@ -33,6 +33,10 @@ func (s *bizTestSuite) TearDownTest() {
 	s.mockRepo.AssertExpectations(s.T())
 }
 
+func TestTaskBiz(t *testing.T) {
+	suite.Run(t, new(bizTestSuite))
+}
+
 func (s *bizTestSuite) Test_impl_Create() {
 	type args struct {
 		t *entities.Task
@@ -336,6 +340,41 @@ func (s *bizTestSuite) Test_impl_ChangeTitle() {
 	}
 }
 
-func TestTaskBiz(t *testing.T) {
-	suite.Run(t, new(bizTestSuite))
+func (s *bizTestSuite) Test_impl_Count() {
+	tests := []struct {
+		name      string
+		mockFunc  func()
+		wantTotal int
+		wantErr   bool
+	}{
+		{
+			name: "count then 3 nil",
+			mockFunc: func() {
+				s.mockRepo.On("CountTasks").Return(3, nil).Once()
+			},
+			wantTotal: 3,
+			wantErr:   false,
+		},
+		{
+			name: "count then 0 error",
+			mockFunc: func() {
+				s.mockRepo.On("CountTasks").Return(0, errors.New("test error")).Once()
+			},
+			wantTotal: 0,
+			wantErr:   true,
+		},
+	}
+	for _, tt := range tests {
+		s.Run(tt.name, func() {
+			tt.mockFunc()
+			gotTotal, err := s.taskBiz.Count()
+			if (err != nil) != tt.wantErr {
+				s.T().Errorf("Count() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if gotTotal != tt.wantTotal {
+				s.T().Errorf("Count() gotTotal = %v, want %v", gotTotal, tt.wantTotal)
+			}
+		})
+	}
 }

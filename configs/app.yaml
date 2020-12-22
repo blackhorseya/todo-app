@@ -5,9 +5,6 @@ http:
   host: ""
   port: 8080
 
-swagger:
-  enabled: true
-
 log:
   format: ""
   level: "debug"
@@ -15,3 +12,6 @@ log:
 db:
   debug: true
   url: "mongodb://todo-app:changeme@localhost:27017/todo-db/?connect=direct&authSource=todo-db"
+
+api:
+  endpoint: "http://localhost:5000"

@@ -12,12 +12,12 @@ function handleResponse(resp) {
   });
 }
 
-function list() {
+function list(page, size) {
   const reqOpt = {
     method: 'GET',
   };
 
-  return fetch(`${apiUrl}api/v1/tasks?size=10`,
+  return fetch(`${apiUrl}api/v1/tasks?page=${page}&size=${size}`,
       reqOpt).then(handleResponse);
 }
 

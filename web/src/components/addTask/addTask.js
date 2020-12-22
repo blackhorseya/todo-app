@@ -29,7 +29,7 @@ class AddTask extends React.Component {
     const {title} = this.state;
     if (title !== '') {
       this.props.add(title);
-      this.state.title = '';
+      this.setState({'title': ''});
     }
   }
 

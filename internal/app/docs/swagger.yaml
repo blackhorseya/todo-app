@@ -26,10 +26,10 @@ paths:
   /liveness:
     get:
       consumes:
-      - application/json
+        - application/json
       description: to know when to restart an application
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -41,14 +41,14 @@ paths:
             type: string
       summary: Liveness
       tags:
-      - Health
+        - Health
   /readiness:
     get:
       consumes:
-      - application/json
+        - application/json
       description: Show application was ready to start accepting traffic
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -60,25 +60,25 @@ paths:
             type: string
       summary: Readiness
       tags:
-      - Health
+        - Health
   /v1/tasks:
     get:
       consumes:
-      - application/json
+        - application/json
       description: list all tasks
       parameters:
-      - default: 1
-        description: page
-        in: query
-        name: page
-        type: integer
-      - default: 3
-        description: size of page
-        in: query
-        name: size
-        type: integer
+        - default: 1
+          description: page
+          in: query
+          name: page
+          type: integer
+        - default: 3
+          description: size of page
+          in: query
+          name: size
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -96,19 +96,19 @@ paths:
             type: string
       summary: List
       tags:
-      - Task
+        - Task
     post:
       consumes:
-      - application/json
+        - application/json
       description: create a task
       parameters:
-      - description: new task
-        in: body
-        name: newTask
-        schema:
-          $ref: '#/definitions/entities.Task'
+        - description: new task
+          in: body
+          name: newTask
+          schema:
+            $ref: '#/definitions/entities.Task'
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -124,20 +124,20 @@ paths:
             type: string
       summary: Create
       tags:
-      - Task
+        - Task
   /v1/tasks/{id}:
     delete:
       consumes:
-      - application/json
+        - application/json
       description: remove a task
       parameters:
-      - description: Task ID
-        in: path
-        name: id
-        required: true
-        type: string
+        - description: Task ID
+          in: path
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -157,27 +157,27 @@ paths:
             type: string
       summary: Remove
       tags:
-      - Task
+        - Task
     patch:
       consumes:
-      - application/json
+        - application/json
       description: modify information of task
       parameters:
-      - description: Task ID
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: completed of task
-        in: query
-        name: completed
-        type: string
-      - description: title of task
-        in: query
-        name: title
-        type: string
+        - description: Task ID
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: completed of task
+          in: query
+          name: completed
+          type: string
+        - description: title of task
+          in: query
+          name: title
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -201,5 +201,5 @@ paths:
             type: string
       summary: ModifyInfo
       tags:
-      - Task
+        - Task
 swagger: "2.0"

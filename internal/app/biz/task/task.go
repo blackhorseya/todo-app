@@ -13,6 +13,7 @@ type Biz interface {
 	UpdateStatus(id string, completed bool) (task *entities.Task, err error)
 	ChangeTitle(id, newTitle string) (task *entities.Task, err error)
 	List(page, size int32) (tasks []*entities.Task, err error)
+	Count() (total int, err error)
 }
 
 // ProviderSet is a task provider set

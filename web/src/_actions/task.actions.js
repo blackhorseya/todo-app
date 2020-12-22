@@ -1,8 +1,7 @@
 import {taskConstants} from '../_constants';
 import {taskServices} from '../_services';
-import {func} from 'prop-types';
 
-function list() {
+function list(page = 1, size = 10) {
   // action creators
   function request() {return {type: taskConstants.LIST_REQUEST};}
 
@@ -17,10 +16,10 @@ function list() {
 
   // actions
   return (dispatch) => {
-    dispatch(request());
+    dispatch(request(page, size));
 
     // list tasks
-    taskServices.list().then(
+    taskServices.list(page, size).then(
         (data) => dispatch(success(data)),
         (error) => dispatch(failure(error.toString())),
     );

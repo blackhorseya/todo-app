@@ -24,6 +24,10 @@ func (s *repoTestSuite) SetupTest() {
 	s.taskRepo = repo
 }
 
+func TestTaskRepo(t *testing.T) {
+	suite.Run(t, new(repoTestSuite))
+}
+
 func (s *repoTestSuite) Test_impl_CreateTask() {
 	id1 := uuid.New().String()
 
@@ -190,6 +194,28 @@ func (s *repoTestSuite) Test_impl_FindOne() {
 	}
 }
 
-func TestTaskRepo(t *testing.T) {
-	suite.Run(t, new(repoTestSuite))
+func (s *repoTestSuite) Test_impl_CountTasks() {
+	tests := []struct {
+		name      string
+		wantTotal int
+		wantErr   bool
+	}{
+		{
+			name:      "count tasks then 3 nil",
+			wantTotal: 3,
+			wantErr:   false,
+		},
+	}
+	for _, tt := range tests {
+		s.Run(tt.name, func() {
+			gotTotal, err := s.taskRepo.CountTasks()
+			if (err != nil) != tt.wantErr {
+				s.T().Errorf("CountTasks() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if gotTotal != tt.wantTotal {
+				s.T().Errorf("CountTasks() gotTotal = %v, want %v", gotTotal, tt.wantTotal)
+			}
+		})
+	}
 }

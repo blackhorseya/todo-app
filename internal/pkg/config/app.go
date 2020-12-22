@@ -9,11 +9,11 @@ import (
 
 // Config configure application parameters
 type Config struct {
-	RunMode string  `yaml:"runMode"`
-	Swagger Swagger `yaml:"swagger"`
-	HTTP    HTTP    `yaml:"http"`
-	Log     Log     `yaml:"log"`
-	DB      DB      `yaml:"db"`
+	RunMode string `yaml:"runMode"`
+	HTTP    HTTP   `yaml:"http"`
+	Log     Log    `yaml:"log"`
+	DB      DB     `yaml:"db"`
+	API     API    `yaml:"api"`
 }
 
 func (c *Config) String() string {
@@ -51,11 +51,6 @@ func (h HTTP) GetAddress() string {
 	return fmt.Sprintf("%s:%d", h.Host, h.Port)
 }
 
-// Swagger configure swagger parameters
-type Swagger struct {
-	Enabled bool `yaml:"enabled"`
-}
-
 // Log configure log parameters
 type Log struct {
 	Format string `yaml:"format"`
@@ -66,4 +61,9 @@ type Log struct {
 type DB struct {
 	URL   string `yaml:"url"`
 	Debug bool   `yaml:"debug"`
+}
+
+// API configure api settings
+type API struct {
+	Endpoint string `yaml:"endpoint"`
 }

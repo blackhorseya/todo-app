@@ -21,7 +21,11 @@ export function tasks(state = {}, action) {
       };
     case taskConstants.ADD_SUCCESS:
       return {
-        item: state.item.concat(action.task),
+        item: {
+          ...state.item,
+          data: state.item.data.concat(action.task),
+          total: state.item.total + 1,
+        },
       };
     case taskConstants.ADD_FAILURE:
       return {
@@ -34,7 +38,11 @@ export function tasks(state = {}, action) {
       };
     case taskConstants.REMOVE_SUCCESS:
       return {
-        item: state.item.filter((task) => task.id !== action.id),
+        item: {
+          ...state.item,
+          data: state.item.data.filter((task) => task.id !== action.id),
+          total: state.item.total - 1,
+        },
       };
     case taskConstants.REMOVE_FAILURE:
       return {
@@ -46,13 +54,16 @@ export function tasks(state = {}, action) {
       };
     case taskConstants.CHANGE_STATUS_SUCCESS:
       return {
-        item: state.item.map((task) => {
-          if (task.id === action.id) {
-            return {...task, completed: action.completed === 2};
-          } else {
-            return task;
-          }
-        }),
+        item: {
+          ...state.item,
+          data: state.item.data.map((task) => {
+            if (task.id === action.id) {
+              return {...task, completed: action.completed === 2};
+            } else {
+              return task;
+            }
+          }),
+        },
       };
     case taskConstants.CHANGE_STATUS_FAILURE:
       return {

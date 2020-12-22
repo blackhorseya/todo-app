@@ -117,7 +117,18 @@ func (i *impl) List(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, tasks)
+	total, err := i.TaskBiz.Count()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data":  tasks,
+		"page":  page,
+		"size":  size,
+		"total": total,
+	})
 }
 
 // Create a task

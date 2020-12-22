@@ -12,6 +12,7 @@ type TaskRepo interface {
 	CreateTask(newTask *entities.Task) (task *entities.Task, err error)
 	UpdateTask(updated *entities.Task) (task *entities.Task, err error)
 	RemoveTask(id string) (count int, err error)
+	CountTasks() (total int, err error)
 }
 
 // ProviderSet is a repository of task of provider set

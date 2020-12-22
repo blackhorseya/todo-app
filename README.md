@@ -19,7 +19,7 @@ practice Todo list application using `golang`
         + [Frameworks](#frameworks)
         + [Infrastructures](#infrastructures)
         + [CI/CD](#ci-cd)
-    
+
 ## How to use
 
 ## Live Preview
@@ -30,42 +30,42 @@ practice Todo list application using `golang`
 
 ### Main
 
--   add tasks
--   list all tasks by completed
--   remove tasks
--   modify tasks
+- add tasks
+- list all tasks by completed
+- remove tasks
+- modify tasks
 
 ### Extra
 
--   task with tags field
--   task with startAt and endAt field
+- task with tags field
+- task with startAt and endAt field
 
 ## Technical
 
 ### Languages
 
--   Go
--   React
+- Go
+- React
 
 ### Frameworks
 
--   [Gin](https://github.com/gin-gonic/gin)
--   [Protobuf](https://developers.google.com/protocol-buffers)
--   [Wire](https://github.com/google/wire)
--   [Testify](https://github.com/stretchr/testify)
--   [Mockery](https://github.com/vektra/mockery)
+- [Gin](https://github.com/gin-gonic/gin)
+- [Protobuf](https://developers.google.com/protocol-buffers)
+- [Wire](https://github.com/google/wire)
+- [Testify](https://github.com/stretchr/testify)
+- [Mockery](https://github.com/vektra/mockery)
 
 ### Infrastructures
 
--   GKE
--   MongoDB
--   Docker
--   GCR
--   Terraform
--   Helm 3
+- GKE
+- MongoDB
+- Docker
+- GCR
+- Terraform
+- Helm 3
 
 ### CI/CD
 
--   [Travis CI](https://travis-ci.com)
--   [Codecov](https://codecov.io/)
--   [Codacy](https://www.codacy.com/)
+- [Travis CI](https://travis-ci.com)
+- [Codecov](https://codecov.io/)
+- [Codacy](https://www.codacy.com/)

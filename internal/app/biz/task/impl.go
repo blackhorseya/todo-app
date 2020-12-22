@@ -16,9 +16,17 @@ type impl struct {
 
 // NewImpl is a constructor of implement business
 func NewImpl(repo repository.TaskRepo) Biz {
-	return &impl{
-		TaskRepo: repo,
+	return &impl{TaskRepo: repo}
+}
+
+// Count all tasks
+func (i *impl) Count() (total int, err error) {
+	total, err = i.TaskRepo.CountTasks()
+	if err != nil {
+		return 0, err
 	}
+
+	return total, nil
 }
 
 // Create serve user to create a task
