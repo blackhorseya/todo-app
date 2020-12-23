@@ -70,6 +70,7 @@ func (s *taskTestSuite) Test_impl_List() {
 				s.mockBiz.On("List", int32(1), int32(1)).Return([]*entities.Task{
 					{Title: "test"},
 				}, nil).Once()
+				s.mockBiz.On("Count").Return(1, nil).Once()
 			},
 			wantCode: http.StatusOK,
 			wantTasks: []*entities.Task{
