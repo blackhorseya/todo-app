@@ -27,7 +27,8 @@ build-image:
 	@docker build -t $(APP_NAME):$(VERSION) \
 	--label "app.name=$(APP_NAME)" \
 	--label "app.version=$(VERSION)" \
-	--pull .
+	--build-arg APP_NAME=$(APP_NAME) \
+	-f Dockerfile .
 
 .PHONY: list-images
 list-images:
