@@ -53,7 +53,7 @@ install-db:
 .PHONY: deploy
 deploy:
 	@helm --namespace $(NS) \
-	upgrade --iNStall $(APP_NAME) ./deployments/helm \
+	upgrade --install $(APP_NAME) ./deployments/helm \
 	--values ./deployments/configs/$(DEPLOY_TO)/todo.yaml \
 	--set image.tag=$(VERSION)
 
