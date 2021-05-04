@@ -56,6 +56,26 @@ export function todos(state = {}, action) {
         error: action.error,
       };
 
+    case todoConstants.CHANGE_STATUS_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case todoConstants.CHANGE_STATUS_SUCCESS:
+      const i = state.data.findIndex((o => o.id === action.task.id));
+
+      return {
+        loading: false,
+        data: [...state.data.slice(0, i), action.task, ...state.data.slice(i + 1)],
+        error: '',
+      };
+    case todoConstants.CHANGE_STATUS_FAILURE:
+      return {
+        loading: false,
+        data: [...state.data],
+        error: action.error,
+      };
+
     default:
       return state;
   }

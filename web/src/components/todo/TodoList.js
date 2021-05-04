@@ -7,10 +7,17 @@ class TodoList extends React.Component {
     super(props);
 
     this.handleRemove = this.handleRemove.bind(this);
+    this.handleChangeStatus = this.handleChangeStatus.bind(this);
   }
 
   componentDidMount() {
     this.props.list(0, 10);
+  }
+
+  handleChangeStatus(id, status) {
+    if (id) {
+      this.props.changeStatus(id, !status);
+    }
   }
 
   handleRemove(id) {
@@ -27,7 +34,12 @@ class TodoList extends React.Component {
           {todo.loading ? <h1>Loading...</h1> : <h1>Todo List</h1>}
           {todo.loading === false && <ul>
             {todo.data.map((item, _) =>
-                <li key={item.id}>{item.title}
+                <li key={item.id}>
+                  <button onClick={() => this.handleChangeStatus(
+                      item.id, item.completed)}>{item.completed ?
+                      'X' :
+                      'V'}</button>
+                  {item.title}
                   <button onClick={() => this.handleRemove(item.id)}>remove
                   </button>
                 </li>,
@@ -47,6 +59,7 @@ function mapStateToProps(state) {
 const actionCreators = {
   list: todoActions.list,
   remove: todoActions.remove,
+  changeStatus: todoActions.changeStatus,
 };
 
 const connectedTodoList = connect(mapStateToProps, actionCreators)(TodoList);

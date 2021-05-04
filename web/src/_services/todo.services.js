@@ -4,6 +4,7 @@ export const todoService = {
   list,
   add,
   remove,
+  changeStatus,
 };
 
 function list(start, end) {
@@ -40,6 +41,15 @@ function remove(id) {
       return id;
     });
   });
+}
+
+function changeStatus(id, status) {
+  const opts = {
+    method: 'PATCH',
+    body: JSON.stringify({completed: status}),
+  };
+
+  return fetch(`${endpoint}/api/v1/tasks/${id}/status`, opts).then(handlerResp);
 }
 
 function handlerResp(response) {

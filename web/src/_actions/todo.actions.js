@@ -5,6 +5,7 @@ export const todoActions = {
   list,
   add,
   remove,
+  changeStatus,
 };
 
 function list(start, end) {
@@ -85,5 +86,32 @@ function remove(id) {
 
   function failure(error) {
     return {type: todoConstants.REMOVE_FAILURE, error};
+  }
+}
+
+function changeStatus(id, status) {
+  return dispatch => {
+    dispatch(request());
+
+    todoService.changeStatus(id, status).then(
+        task => {
+          dispatch(success(task));
+        },
+        error => {
+          dispatch(failure(error.toString()));
+        },
+    );
+  };
+
+  function request() {
+    return {type: todoConstants.CHANGE_STATUS_REQUEST};
+  }
+
+  function success(task) {
+    return {type: todoConstants.CHANGE_STATUS_SUCCESS, task};
+  }
+
+  function failure(error) {
+    return {type: todoConstants.CHANGE_STATUS_FAILURE, error};
   }
 }
