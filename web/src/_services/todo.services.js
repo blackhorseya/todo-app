@@ -7,7 +7,7 @@ function list(start, end) {
     method: 'GET',
   };
 
-  return fetch(`${process.env.REACT_APP_API_ENDPOINT}/api/v1/tasks?start=${start}&end=${end}`, opts).then(handlerResp);
+  return fetch(`${process.env.REACT_APP_API_ENDPOINT || ''}/api/v1/tasks?start=${start}&end=${end}`, opts).then(handlerResp);
 }
 
 function handlerResp(response) {
