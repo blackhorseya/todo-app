@@ -32,7 +32,7 @@ class TodoList extends React.Component {
     return (
         <div>
           {todo.loading ? <h1>Loading...</h1> : <h1>Todo List</h1>}
-          {todo.loading === false && <ul>
+          {todo.loading === false && todo.data && <ul>
             {todo.data.map((item, _) =>
                 <li key={item.id}>
                   <button onClick={() => this.handleChangeStatus(

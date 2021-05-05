@@ -1,6 +1,12 @@
 import {todoConstants} from '../_constants';
 
-export function todos(state = {}, action) {
+const initState = {
+  loading: false,
+  data: [],
+  error: '',
+};
+
+export function todos(state = initState, action) {
   switch (action.type) {
     case todoConstants.LIST_REQUEST:
       return {
@@ -66,7 +72,10 @@ export function todos(state = {}, action) {
 
       return {
         loading: false,
-        data: [...state.data.slice(0, i), action.task, ...state.data.slice(i + 1)],
+        data: [
+          ...state.data.slice(0, i),
+          action.task,
+          ...state.data.slice(i + 1)],
         error: '',
       };
     case todoConstants.CHANGE_STATUS_FAILURE:
