@@ -17,6 +17,7 @@ export function todos(state = initState, action) {
       return {
         loading: false,
         data: action.tasks,
+        total: action.total,
         error: '',
       };
     case todoConstants.LIST_FAILURE:

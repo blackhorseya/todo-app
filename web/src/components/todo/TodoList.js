@@ -79,6 +79,7 @@ class TodoList extends React.Component {
             <input type="number" name="size" value={size}
                    onChange={this.handleChangeSize}/>
             <button onClick={this.handleNext}>{`>`}</button>
+            <text>total: {todo.total}</text>
           </div>}
           {todo.loading === false && todo.data && <ul>
             {todo.data.map((item, _) =>

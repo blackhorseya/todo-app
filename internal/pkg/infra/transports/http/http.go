@@ -59,7 +59,11 @@ func NewRouter(o *Options, logger *zap.Logger, init InitHandlers) *gin.Engine {
 
 	r := gin.New()
 
-	r.Use(cors.Default())
+	defaultCORS := cors.DefaultConfig()
+	defaultCORS.AllowAllOrigins = true
+	defaultCORS.AddExposeHeaders("X-Total-Count")
+
+	r.Use(cors.New(defaultCORS))
 	r.Use(middlewares.ContextMiddleware())
 	r.Use(gin.Recovery())
 	r.Use(ginzap.Ginzap(logger, time.RFC3339, true))

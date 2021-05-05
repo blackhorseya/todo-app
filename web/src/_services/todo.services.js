@@ -12,7 +12,19 @@ function list(start, end) {
     method: 'GET',
   };
 
-  return fetch(`${endpoint}/api/v1/tasks?start=${start}&end=${end}`, opts).then(handlerResp);
+  return fetch(`${endpoint}/api/v1/tasks?start=${start}&end=${end}`, opts).then((resp) => {
+        return resp.json().then(body => {
+          if (!resp.ok) {
+            const error = (body && body.msg) || resp.statusText;
+            return Promise.reject(error);
+          }
+
+          return {
+            data: body.data,
+            total: resp.headers.get('X-Total-Count'),
+          };
+        });
+      });
 }
 
 function add(task) {
@@ -53,14 +65,14 @@ function changeStatus(id, status) {
 }
 
 function handlerResp(response) {
-  return response.text().then(text => {
-    const resp = text && JSON.parse(text);
+  console.log(response.headers.get('X-Total-Count'));
 
-    if (response.statusCode >= 400) {
-      const error = (resp && resp.msg) || response.statusText;
+  return response.json().then(body => {
+    if (!response.ok) {
+      const error = (body && body.msg) || response.statusText;
       return Promise.reject(error);
     }
 
-    return resp.data;
+    return body.data;
   });
 }

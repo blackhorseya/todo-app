@@ -13,8 +13,8 @@ function list(start, end) {
     dispatch(request());
 
     todoService.list(start, end).then(
-        tasks => {
-          dispatch(success(tasks));
+        resp => {
+          dispatch(success(resp.data, resp.total));
         },
         error => {
           dispatch(failure(error.toString()));
@@ -26,8 +26,8 @@ function list(start, end) {
     return {type: todoConstants.LIST_REQUEST};
   }
 
-  function success(tasks) {
-    return {type: todoConstants.LIST_SUCCESS, tasks};
+  function success(tasks, total) {
+    return {type: todoConstants.LIST_SUCCESS, tasks, total};
   }
 
   function failure(error) {

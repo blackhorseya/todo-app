@@ -97,7 +97,7 @@ func (i *impl) List(c *gin.Context) {
 		return
 	}
 
-	c.Header("x-total", strconv.Itoa(total))
+	c.Header("X-Total-Count", strconv.Itoa(total))
 	c.JSON(http.StatusOK, response.OK.WithData(ret))
 }
 
