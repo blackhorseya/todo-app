@@ -111,28 +111,6 @@ class TodoList extends React.Component {
               </Grid>
             </Paper>
           </Grid>
-
-          {/*{todo.loading ? <h1>Loading...</h1> : <div>*/}
-          {/*  <h1>Todo List</h1>*/}
-          {/*  <button onClick={this.handlePrevious}>{`<`}</button>*/}
-          {/*  <input type="number" name="size" value={size}*/}
-          {/*         onChange={this.handleChangeSize}/>*/}
-          {/*  <button onClick={this.handleNext}>{`>`}</button>*/}
-          {/*  <FormLabel>total: {todo.total}</FormLabel>*/}
-          {/*</div>}*/}
-          {/*{todo.loading === false && todo.data && <ul>*/}
-          {/*  {todo.data.map((item, _) =>*/}
-          {/*      <li key={item.id}>*/}
-          {/*        <button onClick={() => this.handleChangeStatus(*/}
-          {/*            item.id, item.completed)}>{item.completed ?*/}
-          {/*            'X' :*/}
-          {/*            'V'}</button>*/}
-          {/*        {item.title}*/}
-          {/*        <button onClick={() => this.handleRemove(item.id)}>remove*/}
-          {/*        </button>*/}
-          {/*      </li>,*/}
-          {/*  )}*/}
-          {/*</ul>}*/}
         </Grid>
     );
   }
